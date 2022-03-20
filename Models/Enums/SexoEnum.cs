@@ -2,7 +2,7 @@ namespace Philotes.Models.Enums
 {
     public enum SexoEnum
     {
-        Macho = 0, 
-        Femea = 1
+        Masculino = 0, 
+        Feminino = 1
     }
 }
