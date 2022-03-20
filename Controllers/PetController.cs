@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using Microsoft.AspNetCore.Mvc;
 using Philotes.Models;
 using Philotes.Models.Enums;
@@ -14,8 +16,8 @@ namespace Philotes.Controllers
         {
             new Pet(),
             new Pet {Id = 1, Nome = "Belota"},
-            new Pet {Id = 2, Nome = "Cherry", Raca = "Lhasa e Shih Tzy", Cores = new List<CorEnum>{CorEnum.Branca, CorEnum.Preta},  Descricao = "Invocada com lacinho", Porte=PorteEnum.P, Sexo=SexoEnum.Femea},
-            new Pet {Id = 4, Nome = "Cacau", Raca = "Labrador", Cores = new List<CorEnum>{CorEnum.Laranja}, Descricao = "Toda gordinha é legal", Porte=PorteEnum.G, Sexo=SexoEnum.Femea }
+            new Pet {Id = 2, Nome = "Cherry", Raca = "Lhasa e Shih Tzy", Cores = new List<CorEnum>{CorEnum.Branca, CorEnum.Preta},  Descricao = "Invocada com lacinho", Porte=PorteEnum.P, Sexo=SexoEnum.Feminino},
+            new Pet {Id = 4, Nome = "Cacau", Raca = "Labrador", Cores = new List<CorEnum>{CorEnum.Laranja}, Descricao = "Toda gordinha é legal", Porte=PorteEnum.G, Sexo=SexoEnum.Feminino }
         };
         private Pet petObjeto = new Pet();
 
@@ -56,8 +58,55 @@ namespace Philotes.Controllers
         {
             pets.Add(novoPet);
             return Ok(pets);
+        }// branco, preto
+        [HttpPost("ListarPorCores")]
+        public IActionResult ListarPorCores(List<CorEnum> cores)
+        {
+            List<Pet> petCor = new List<Pet>{};
+            foreach (var pet in pets) {
+                foreach (var cor in cores) {
+                    if (pet.Cores != null && pet.Cores.Contains(cor)) {
+                        petCor.Add(pet);
+                        break;
+                    }
+                }
+            }
+            return Ok(petCor);
+        }
+        [HttpPost("EnviarNotificacao")]
+        public IActionResult EnviarEmail()
+        {
+            var smtpClient = new SmtpClient("smtp.gmail.com")
+            {
+                Port = 587,
+                Credentials = new NetworkCredential("philotesapp@gmail.com", "philotes123"),
+                EnableSsl = false,
+            };
+    
+            smtpClient.Send("philotesapp@gmail.com", "kaliane.pemi@gmail.com", "Teste", "Olá eu sou um teste de notificação");
+
+            return Ok();
         }
 
+        [HttpPut]
+        public IActionResult UpdatePet(Pet petObjeto)
+        {
+            Pet petAlterado = pets.Find(qlqcoisa => qlqcoisa.Id == petObjeto.Id);
+            petAlterado.Nome = petObjeto.Nome;
+            petAlterado.Raca = petObjeto.Raca;
+            petAlterado.Cores = petObjeto.Cores;
+            petAlterado.Descricao = petObjeto.Descricao;
+            petAlterado.Porte = petObjeto.Porte;
+            petAlterado.Sexo = petObjeto.Sexo;
+            return Ok(petAlterado);
+        }
+
+        [HttpDelete("{Id}")]
+        public IActionResult Delete(int Id)
+        {
+            pets.RemoveAll(qlqPet => qlqPet.Id == Id);
+            return Ok(pets);
+        }
 
 
 
