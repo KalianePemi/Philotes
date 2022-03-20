@@ -16,6 +16,4 @@ namespace Philotes.Models
 
         public string FotoURL {get; set;}
     }
-    
-
 }
