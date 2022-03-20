@@ -14,8 +14,8 @@ namespace Philotes.Controllers
         {
             new Pet(),
             new Pet {Id = 1, Nome = "Belota"},
-            new Pet {Id = 2, Nome = "Cherry", Raca = "Lhasa e Shih Tzy", Cores = {CorEnum.Branca, CorEnum.Preta},  Descricao = "Invocada com lacinho", Porte=PorteEnum.P, Sexo=SexoEnum.Femea},
-            new Pet {Id = 4, Nome = "Cacau", Raca = "Labrador", Cores = {CorEnum.Laranja}, Descricao = "Toda gordinha é legal", Porte=PorteEnum.G, Sexo=SexoEnum.Femea }
+            new Pet {Id = 2, Nome = "Cherry", Raca = "Lhasa e Shih Tzy", Cores = new List<CorEnum>{CorEnum.Branca, CorEnum.Preta},  Descricao = "Invocada com lacinho", Porte=PorteEnum.P, Sexo=SexoEnum.Femea},
+            new Pet {Id = 4, Nome = "Cacau", Raca = "Labrador", Cores = new List<CorEnum>{CorEnum.Laranja}, Descricao = "Toda gordinha é legal", Porte=PorteEnum.G, Sexo=SexoEnum.Femea }
         };
         private Pet petObjeto = new Pet();
 
