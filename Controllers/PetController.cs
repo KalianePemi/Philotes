@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Philotes.Models;
 using Philotes.Models.Enums;
 using Philotes.Data;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Philotes.Controllers
 {
@@ -13,26 +15,12 @@ namespace Philotes.Controllers
     [Route("[controller]")]
     public class PetController : ControllerBase
     {
-       /*private readonly DataContext _context;
-       public PersonagemController(DataContext context)
+       private readonly DataContext _context;
+       public PetController(DataContext context)
        {
            _context = context;
        }
-       [HttpGet("{id}")]
-       public async Task<IActionResult> GetSingle(int id)
-       {
-           Try
-           {
-               Pet petObjeto = await _context.Pets.FirstOrDefaultAsync(petBusca =>petBusca.Id == id);
-               return Ok(petObjeto);
 
-           }
-           catch (Exception ex)
-           {
-               return BadRequest (ex.Message);
-           }*/
-
-       
         private static List<Pet>pets = new List<Pet>
         {
             new Pet(),
@@ -43,9 +31,13 @@ namespace Philotes.Controllers
         private Pet petObjeto = new Pet();
 
         [HttpGet("GetAll")]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            return Ok(pets);
+            try {
+                return Ok(await _context.Tests.ToListAsync());
+            } catch {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("{id}")]
