@@ -8,7 +8,7 @@ namespace Philotes.Models
         public int Id {get; set;}
         public string Nome {get; set;}
         public string Raca {get; set;}
-        public List<CorEnum> Cores {get; set;}
+        public CorEnum Cor {get; set;}
         public PorteEnum Porte {get; set;}
         public SexoEnum Sexo {get; set;}
 

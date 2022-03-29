@@ -5,6 +5,7 @@ using System.Net.Mail;
 using Microsoft.AspNetCore.Mvc;
 using Philotes.Models;
 using Philotes.Models.Enums;
+using Philotes.Data;
 
 namespace Philotes.Controllers
 {
@@ -12,12 +13,32 @@ namespace Philotes.Controllers
     [Route("[controller]")]
     public class PetController : ControllerBase
     {
+       /*private readonly DataContext _context;
+       public PersonagemController(DataContext context)
+       {
+           _context = context;
+       }
+       [HttpGet("{id}")]
+       public async Task<IActionResult> GetSingle(int id)
+       {
+           Try
+           {
+               Pet petObjeto = await _context.Pets.FirstOrDefaultAsync(petBusca =>petBusca.Id == id);
+               return Ok(petObjeto);
+
+           }
+           catch (Exception ex)
+           {
+               return BadRequest (ex.Message);
+           }*/
+
+       
         private static List<Pet>pets = new List<Pet>
         {
             new Pet(),
             new Pet {Id = 1, Nome = "Belota"},
-            new Pet {Id = 2, Nome = "Cherry", Raca = "Lhasa e Shih Tzy", Cores = new List<CorEnum>{CorEnum.Branca, CorEnum.Preta},  Descricao = "Invocada com lacinho", Porte=PorteEnum.P, Sexo=SexoEnum.Feminino},
-            new Pet {Id = 4, Nome = "Cacau", Raca = "Labrador", Cores = new List<CorEnum>{CorEnum.Laranja}, Descricao = "Toda gordinha é legal", Porte=PorteEnum.G, Sexo=SexoEnum.Feminino }
+            new Pet {Id = 2, Nome = "Cherry", Raca = "Lhasa e Shih Tzy", Cor = CorEnum.Cinza,  Descricao = "Invocada com lacinho", Porte=PorteEnum.P, Sexo=SexoEnum.Feminino},
+            new Pet {Id = 4, Nome = "Cacau", Raca = "Labrador", Cor = CorEnum.Cinza, Descricao = "Toda gordinha é legal", Porte=PorteEnum.G, Sexo=SexoEnum.Feminino }
         };
         private Pet petObjeto = new Pet();
 
@@ -65,7 +86,7 @@ namespace Philotes.Controllers
             List<Pet> petCor = new List<Pet>{};
             foreach (var pet in pets) {
                 foreach (var cor in cores) {
-                    if (pet.Cores != null && pet.Cores.Contains(cor)) {
+                    if (pet.Cor != null /*/&& pet.Cores.Contains(cor)*/) {
                         petCor.Add(pet);
                         break;
                     }
@@ -94,7 +115,7 @@ namespace Philotes.Controllers
             Pet petAlterado = pets.Find(qlqcoisa => qlqcoisa.Id == petObjeto.Id);
             petAlterado.Nome = petObjeto.Nome;
             petAlterado.Raca = petObjeto.Raca;
-            petAlterado.Cores = petObjeto.Cores;
+            petAlterado.Cor = petObjeto.Cor;
             petAlterado.Descricao = petObjeto.Descricao;
             petAlterado.Porte = petObjeto.Porte;
             petAlterado.Sexo = petObjeto.Sexo;
@@ -109,13 +130,5 @@ namespace Philotes.Controllers
         }
 
 
-
-
-
-
-
-
-
-
-    }
+   }
 }
