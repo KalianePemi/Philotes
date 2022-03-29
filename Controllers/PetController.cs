@@ -8,6 +8,7 @@ using Philotes.Models.Enums;
 using Philotes.Data;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace Philotes.Controllers
 {
@@ -34,8 +35,8 @@ namespace Philotes.Controllers
         public async Task<IActionResult> Get()
         {
             try {
-                return Ok(await _context.Tests.ToListAsync());
-            } catch {
+                return Ok(await _context.Pets.ToListAsync());
+            } catch (Exception ex){
                 return BadRequest(ex.Message);
             }
         }
