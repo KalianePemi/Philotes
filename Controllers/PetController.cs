@@ -29,10 +29,10 @@ namespace Philotes.Controllers
             new Pet {Id = 2, Nome = "Cherry", Raca = "Lhasa e Shih Tzy", Cor = CorEnum.Cinza,  Descricao = "Invocada com lacinho", Porte=PorteEnum.P, Sexo=SexoEnum.Feminino},
             new Pet {Id = 4, Nome = "Cacau", Raca = "Labrador", Cor = CorEnum.Cinza, Descricao = "Toda gordinha é legal", Porte=PorteEnum.G, Sexo=SexoEnum.Feminino }
         };
-        private Pet petObjeto = new Pet();
+        public Pet petObjeto = new Pet();
 
         [HttpGet("GetAll")]
-        public async Task<IActionResult> Get()
+        private async Task<IActionResult> Get()
         {
             try {
                 return Ok(await _context.Pets.ToListAsync());
@@ -40,17 +40,33 @@ namespace Philotes.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
+    
         [HttpGet("{id}")]
-        public IActionResult GetSingle(int id)
+        public async Task<IActionResult> GetSingle(int id)
         {
-            return Ok(pets.FirstOrDefault(petObjeto => petObjeto.Id ==id));
+           try
+           {
+               Pet petObjeto = await _context.Pets.FirstOrDefaultAsync(petBusca => petBusca.Id == id);
+               return Ok (petObjeto);
+           }
+           catch (Exception ex)
+           {
+               return BadRequest(ex.Message);
+           }
+        
         }
 
         [HttpGet("GetQuantidade")]
-        public IActionResult GetQuantidade()
+        public async Task<IActionResult> GetQuantidade()
         {
-            return Ok ("Quantidade de Pets: " + pets.Count);
+            try
+            {
+                return Ok ("Quantidade de Pets: " + pets.Count);
+            }
+            catch (Exception ex)
+            {
+                 return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("GetOrdem")]
