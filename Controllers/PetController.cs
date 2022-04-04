@@ -32,7 +32,7 @@ namespace Philotes.Controllers
         public Pet petObjeto = new Pet();
 
         [HttpGet("GetAll")]
-        private async Task<IActionResult> Get()
+        public async Task<IActionResult> Get()
         {
             try {
                 return Ok(await _context.Pets.ToListAsync());
