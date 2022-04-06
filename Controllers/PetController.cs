@@ -68,27 +68,65 @@ namespace Philotes.Controllers
                  return BadRequest(ex.Message);
             }
         }
+         [HttpGet("GetOrdem")]
+         public async Task <IActionResult> GetOrdem()
+         {
+            try
+            {
+                List<Pet> listaOrdem = pets.OrderBy(petObjeto => petObjeto.Porte).ToList();
+                return Ok(listaOrdem);
+            }
+            catch (Exception ex)
+            {
+                 return BadRequest(ex.Message);
+            }
 
+         }
+
+        /*
         [HttpGet("GetOrdem")]
         public IActionResult GetOrdem()
         {
             List<Pet> listaOrdem = pets.OrderBy(petObjeto => petObjeto.Porte).ToList();
             return Ok(listaOrdem);
-        }
+           
+        }*/ 
+        //[HttpGet("GetRacaAproximado/{raca}")]
+       // public  async  Task <IActionResult> GetRacaAproximado(string raca)
+       // {
+       //     try
+       //     {
+       //         return Ok(listaRaca);
+       //     }
+       //     cat
+       // }
 
-        [HttpGet("GetRacaAproximado/{raca}")]
+        /*[HttpGet("GetRacaAproximado/{raca}")]
         public IActionResult GetRacaAproximado(string raca)
         {
             List<Pet> listaRaca = pets.FindAll(petObjeto => petObjeto.Raca.Contains(raca));
             return Ok(listaRaca);
-        }
+        }*/
 
         [HttpPost]
-        public IActionResult AddPet(Pet novoPet)
+        public async Task <IActionResult> AddPet(Pet novoPet)
         {
-            pets.Add(novoPet);
-            return Ok(pets);
+            try
+            {
+                await _context.Pets.AddAsync(novoPet);
+                await _context.SaveChangesAsync(); 
+                return Ok(pets);
+            }
+            catch  (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        
+            
+            
         }// branco, preto
+
         [HttpPost("ListarPorCores")]
         public IActionResult ListarPorCores(List<CorEnum> cores)
         {
