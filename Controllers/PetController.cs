@@ -61,7 +61,8 @@ namespace Philotes.Controllers
         {
             try
             {
-                return Ok ("Quantidade de Pets: " + pets.Count);
+                int count = await _context.Pets.CountAsync();
+                return Ok("Quantidade de Pets: " + count);
             }
             catch (Exception ex)
             {
@@ -73,7 +74,7 @@ namespace Philotes.Controllers
          {
             try
             {
-                List<Pet> listaOrdem = pets.OrderBy(petObjeto => petObjeto.Porte).ToList();
+            List<Pet> listaOrdem = _context.Pets.OrderBy(petObjeto => petObjeto.Porte).ToList();
                 return Ok(listaOrdem);
             }
             catch (Exception ex)
@@ -83,30 +84,18 @@ namespace Philotes.Controllers
 
          }
 
-        /*
-        [HttpGet("GetOrdem")]
-        public IActionResult GetOrdem()
+         [HttpGet("GetRacaAproximado/{raca}")]
+       public  async  Task <IActionResult> GetRacaAproximado(string raca)
         {
-            List<Pet> listaOrdem = pets.OrderBy(petObjeto => petObjeto.Porte).ToList();
-            return Ok(listaOrdem);
-           
-        }*/ 
-        //[HttpGet("GetRacaAproximado/{raca}")]
-       // public  async  Task <IActionResult> GetRacaAproximado(string raca)
-       // {
-       //     try
-       //     {
-       //         return Ok(listaRaca);
-       //     }
-       //     cat
-       // }
-
-        /*[HttpGet("GetRacaAproximado/{raca}")]
-        public IActionResult GetRacaAproximado(string raca)
-        {
-            List<Pet> listaRaca = pets.FindAll(petObjeto => petObjeto.Raca.Contains(raca));
-            return Ok(listaRaca);
-        }*/
+          try
+           {    List<Pet> listaRaca = await _context.Pets.Where(petObjeto => petObjeto.Raca.Contains(raca)).ToListAsync();
+                return Ok(listaRaca);
+           }
+           catch (Exception ex)
+           {
+               return BadRequest(ex.Message);
+           }
+        }
 
         [HttpPost]
         public async Task <IActionResult> AddPet(Pet novoPet)
@@ -115,17 +104,13 @@ namespace Philotes.Controllers
             {
                 await _context.Pets.AddAsync(novoPet);
                 await _context.SaveChangesAsync(); 
-                return Ok(pets);
+                return Ok(await _context.Pets.ToListAsync());
             }
             catch  (Exception ex)
             {
                 return BadRequest(ex.Message);
-            }
-
-        
-            
-            
-        }// branco, preto
+            }            
+        }
 
         [HttpPost("ListarPorCores")]
         public IActionResult ListarPorCores(List<CorEnum> cores)
@@ -142,7 +127,7 @@ namespace Philotes.Controllers
             return Ok(petCor);
         }
         [HttpPost("EnviarNotificacao")]
-        public IActionResult EnviarEmail()
+        public async Task <IActionResult> EnviarEmail()
         {
             var smtpClient = new SmtpClient("smtp.gmail.com")
             {
@@ -156,26 +141,46 @@ namespace Philotes.Controllers
             return Ok();
         }
 
+
         [HttpPut]
-        public IActionResult UpdatePet(Pet petObjeto)
+        public async Task <IActionResult> UpdatePet(Pet petObjeto)
         {
-            Pet petAlterado = pets.Find(qlqcoisa => qlqcoisa.Id == petObjeto.Id);
-            petAlterado.Nome = petObjeto.Nome;
-            petAlterado.Raca = petObjeto.Raca;
-            petAlterado.Cor = petObjeto.Cor;
-            petAlterado.Descricao = petObjeto.Descricao;
-            petAlterado.Porte = petObjeto.Porte;
-            petAlterado.Sexo = petObjeto.Sexo;
-            return Ok(petAlterado);
+            try
+            {
+                Pet petAlterado = await _context.Pets.FirstOrDefaultAsync(qlqcoisa => qlqcoisa.Id == petObjeto.Id);
+
+                petAlterado.Nome = petObjeto.Nome;
+                petAlterado.Raca = petObjeto.Raca;
+                petAlterado.Cor = petObjeto.Cor;
+                petAlterado.Descricao = petObjeto.Descricao;
+                petAlterado.Porte = petObjeto.Porte;
+                petAlterado.Sexo = petObjeto.Sexo;
+
+                _context.Pets.Update(petAlterado);
+                int petAlteradoFim = await _context.SaveChangesAsync();
+
+                return Ok(petAlteradoFim);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("{Id}")]
-        public IActionResult Delete(int Id)
+        public async Task <IActionResult> Delete(int Id)
         {
-            pets.RemoveAll(qlqPet => qlqPet.Id == Id);
-            return Ok(pets);
+            try
+            {
+                Pet petAserExcluido = await _context.Pets.FirstOrDefaultAsync (qlqPet => qlqPet.Id == Id);
+                _context.Pets.Remove(petAserExcluido);
+                int petExcluido = await _context.SaveChangesAsync();
+                return Ok(petExcluido);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest (ex.Message);
+            }
         }
-
-
    }
 }

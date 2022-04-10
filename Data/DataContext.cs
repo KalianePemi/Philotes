@@ -13,8 +13,9 @@ namespace Philotes.Data
 
        }
         public DbSet<Pet> Pets {get; set;}
-        
-       protected override void OnModelCreating(ModelBuilder modelBuilder)
+        public DbSet<Evento> Eventos { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
        {
         modelBuilder.Entity<Pet>().HasData
         (
