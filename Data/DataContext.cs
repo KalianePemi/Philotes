@@ -13,7 +13,8 @@ namespace Philotes.Data
 
        }
         public DbSet<Pet> Pets {get; set;}
-        public DbSet<Evento> Eventos { get; set; }
+        public DbSet<Evento> Eventos {get; set;}
+        public DbSet<Usuario> Usuarios {get; set;}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
        {

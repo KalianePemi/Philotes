@@ -14,6 +14,7 @@ namespace Philotes.Models
 
         public string Descricao {get; set;}
 
-        public string FotoURL {get; set;}
+        public byte[] FotoPet {get; set;}
+        public Usuario Usuario {get; set;}
     }
 }

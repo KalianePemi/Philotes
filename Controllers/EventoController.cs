@@ -32,22 +32,22 @@ namespace Philotes.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        // [HttpDelete("{id}")]
-        // public async Task<IActionResult> Delete(int id)
-        // {
-        //     try
-        //     {
-        //         Evento eRemover = await _context.Evento.FirstOrDefaultAsync(e => e.Id == id);
-        //         _context.Evento.Remove(eRemover);
-        //         int linhaAfetadas = await _context.SaveChangesAsync();
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                Evento eRemover = await _context.Eventos.FirstOrDefaultAsync(e => e.Id == id);
+                _context.Eventos.Remove(eRemover);
+                int linhaAfetada = await _context.SaveChangesAsync();
 
-        //         return Ok(linhasAfetadas);
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         return BadRequest(ex.Message);
-        //     }
-        // }
+                return Ok(linhaAfetada);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         [HttpGet("GetAll")]
         public async Task <IActionResult>GetAll()
@@ -61,6 +61,20 @@ namespace Philotes.Controllers
                 return BadRequest(ex.Message);
             }
            
+        }
+        [HttpPut]
+        public async Task<IActionResult> Update (Evento alteraEvento )
+        {
+            try
+            {
+                _context.Eventos.Update(alteraEvento);
+                int linhaAfetada = await _context.SaveChangesAsync();
+                return Ok(linhaAfetada);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
