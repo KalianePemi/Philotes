@@ -22,13 +22,6 @@ namespace Philotes.Controllers
            _context = context;
        }
 
-        private static List<Pet>pets = new List<Pet>
-        {
-            new Pet(),
-            new Pet {Id = 1, Nome = "Belota"},
-            new Pet {Id = 2, Nome = "Cherry", Raca = "Lhasa e Shih Tzy", Cor = CorEnum.Cinza,  Descricao = "Invocada com lacinho", Porte=PorteEnum.P, Sexo=SexoEnum.Feminino},
-            new Pet {Id = 4, Nome = "Cacau", Raca = "Labrador", Cor = CorEnum.Cinza, Descricao = "Toda gordinha é legal", Porte=PorteEnum.G, Sexo=SexoEnum.Feminino }
-        };
         public Pet petObjeto = new Pet();
 
         [HttpGet("GetAll")]
@@ -47,6 +40,8 @@ namespace Philotes.Controllers
            try
            {
                Pet petObjeto = await _context.Pets.Include(us => us.Usuario)
+                                             .Include(us => us.PetCores).ThenInclude(us => us.Cor)
+               
                .FirstOrDefaultAsync(petBusca => petBusca.Id == id);
                return Ok (petObjeto);
            }
@@ -114,19 +109,16 @@ namespace Philotes.Controllers
         }
 
         [HttpPost("ListarPorCores")]
-        public IActionResult ListarPorCores(List<CorEnum> cores)
+        public async Task<IActionResult> ListarPorCores(PetCor Cor)
         {
-            List<Pet> petCor = new List<Pet>{};
-            foreach (var pet in pets) {
-                foreach (var cor in cores) {
-                    if (pet.Cor != null /*/&& pet.Cores.Contains(cor)*/) {
-                        petCor.Add(pet);
-                        break;
-                    }
-                }
+            List<Pet> pets = new List<Pet>{};
+            List<PetCor> petCores = await _context.PetCores.Where(PetCor => PetCor.CorId == Cor.CorId).ToListAsync();
+            foreach (var petCor in petCores) {
+                pets.Add(petCor.Pet);
             }
-            return Ok(petCor);
+            return Ok(pets);
         }
+
         [HttpPost("EnviarNotificacao")]
         public async Task <IActionResult> EnviarEmail()
         {
@@ -152,7 +144,7 @@ namespace Philotes.Controllers
 
                 petAlterado.Nome = petObjeto.Nome;
                 petAlterado.Raca = petObjeto.Raca;
-                petAlterado.Cor = petObjeto.Cor;
+                petAlterado.PetCores = petObjeto.PetCores;
                 petAlterado.Descricao = petObjeto.Descricao;
                 petAlterado.Porte = petObjeto.Porte;
                 petAlterado.Sexo = petObjeto.Sexo;
