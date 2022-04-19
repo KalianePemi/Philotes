@@ -46,7 +46,8 @@ namespace Philotes.Controllers
         {
            try
            {
-               Pet petObjeto = await _context.Pets.FirstOrDefaultAsync(petBusca => petBusca.Id == id);
+               Pet petObjeto = await _context.Pets.Include(us => us.Usuario)
+               .FirstOrDefaultAsync(petBusca => petBusca.Id == id);
                return Ok (petObjeto);
            }
            catch (Exception ex)

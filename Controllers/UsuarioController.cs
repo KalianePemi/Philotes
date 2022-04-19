@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -97,7 +98,7 @@ namespace Philotes.Controllers
             return BadRequest(ex.Message);
         }
     }
-    [HttpPut("AuterarSenha")]
+    [HttpPut("AlterarSenha")]
         public async Task<IActionResult> AlterarSenhaUsuario(Usuario credenciais)
         {
             try
@@ -131,6 +132,21 @@ namespace Philotes.Controllers
             catch (System.Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+        [HttpDelete("{Id}")]
+        public async Task <IActionResult> Delete(int Id)
+        {
+            try
+            {
+                Usuario usuarioAserExcluido = await _context.Usuarios.FirstOrDefaultAsync (us => us.Id == Id);
+                _context.Usuarios.Remove(usuarioAserExcluido);
+                int usuarioExcluido = await _context.SaveChangesAsync();
+                return Ok(usuarioExcluido);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest (ex.Message);
             }
         }
 

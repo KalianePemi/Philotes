@@ -1,5 +1,6 @@
 using Philotes.Models.Enums;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Philotes.Models
 {
@@ -15,6 +16,8 @@ namespace Philotes.Models
         public string Descricao {get; set;}
 
         public byte[] FotoPet {get; set;}
+        
+        [JsonIgnore]
         public Usuario Usuario {get; set;}
     }
 }
