@@ -3,11 +3,12 @@ namespace Philotes.Models
     public class Localizacao
     {
        public int Id {get; set;}
-        string Endereco {get; set;}
-        string Cidade {get; set;}
-        string Estado {get; set;}
-        int Num {get; set;}
-        int Cep {get; set; }
+        public string Endereco {get; set;}
+       public  string Cidade {get; set;}
+       public string Estado {get; set;}
+        public string Complemento {get; set;}
+        public int Num {get; set;}
+       public int Cep {get; set; }
 
     }
 }

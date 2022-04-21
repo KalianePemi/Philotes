@@ -16,6 +16,7 @@ namespace Philotes.Data
         public DbSet<Evento> Eventos {get; set;}
         public DbSet<Usuario> Usuarios {get; set;}
         public DbSet<PetCor> PetCores {get; set;}
+        public DbSet<Localizacao> Enderecos {get; set;}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
        {

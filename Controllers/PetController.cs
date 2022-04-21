@@ -28,7 +28,9 @@ namespace Philotes.Controllers
         public async Task<IActionResult> Get()
         {
             try {
-                return Ok(await _context.Pets.ToListAsync());
+                return Ok(await _context.Pets.Include(us => us.Usuario)
+                                             .Include(us => us.PetCores)
+                                             .ThenInclude(us => us.Cor).ToListAsync());
             } catch (Exception ex){
                 return BadRequest(ex.Message);
             }
@@ -108,16 +110,16 @@ namespace Philotes.Controllers
             }            
         }
 
-        [HttpPost("ListarPorCores")]
-        public async Task<IActionResult> ListarPorCores(PetCor Cor)
-        {
-            List<Pet> pets = new List<Pet>{};
-            List<PetCor> petCores = await _context.PetCores.Where(PetCor => PetCor.CorId == Cor.CorId).ToListAsync();
-            foreach (var petCor in petCores) {
-                pets.Add(petCor.Pet);
-            }
-            return Ok(pets);
-        }
+        // [HttpPost("ListarPorCores")]
+        // public async Task<IActionResult> ListarPorCores(PetCor Cor)
+        // {
+        //     List<Pet> pets = new List<Pet>{};
+        //     List<PetCor> petCores = await _context.PetCores.Where(PetCor => PetCor.CorId == Cor.CorId).ToListAsync();
+        //     foreach (var petCor in petCores) {
+        //         pets.Add(petCor.Pet);
+        //     }
+        //     return Ok(pets);
+        // }
 
         [HttpPost("EnviarNotificacao")]
         public async Task <IActionResult> EnviarEmail()
