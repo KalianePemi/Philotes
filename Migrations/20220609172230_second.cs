@@ -2,7 +2,7 @@
 
 namespace Philotes.Migrations
 {
-    public partial class MigracaoPetJasonIgnore : Migration
+    public partial class second : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

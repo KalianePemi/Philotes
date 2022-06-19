@@ -13,7 +13,7 @@ namespace Philotes.Models
         public string Sobrenome {get; set;}
         public string Username {get; set;}
         public string Email {get;set;}
-        public int Celular {get; set;}
+        public string Celular {get; set;}
         public byte[] PasswordHash {get; set;}
         public byte[] PasswordSalt {get; set;}
         public byte[] Foto {get; set;}

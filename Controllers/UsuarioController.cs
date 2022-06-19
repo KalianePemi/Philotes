@@ -90,7 +90,7 @@ namespace Philotes.Controllers
                 usuario.DataAcesso = System.DateTime.Now;
                 _context.Usuarios.Update(usuario);
                 await _context.SaveChangesAsync();
-                return Ok(usuario.Id);
+                return Ok(usuario);
             }
         }
         catch (System.Exception ex)

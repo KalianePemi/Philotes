@@ -10,8 +10,8 @@ using Philotes.Data;
 namespace Philotes.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220418234654_MigracaoPetJasonIgnore")]
-    partial class MigracaoPetJasonIgnore
+    [Migration("20220613121302_UltimoLocalVisto")]
+    partial class UltimoLocalVisto
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,36 @@ namespace Philotes.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.15")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("Philotes.Models.Cor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Nome")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Cor");
+                });
+
+            modelBuilder.Entity("Philotes.Models.Enums.PetCor", b =>
+                {
+                    b.Property<int>("PetId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CorId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PetId", "CorId");
+
+                    b.HasIndex("CorId");
+
+                    b.ToTable("PetCores");
+                });
 
             modelBuilder.Entity("Philotes.Models.Evento", b =>
                 {
@@ -56,9 +86,27 @@ namespace Philotes.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("Cep")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Cidade")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Complemento")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Endereco")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Estado")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Num")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Localizacao");
+                    b.ToTable("Enderecos");
                 });
 
             modelBuilder.Entity("Philotes.Models.Pet", b =>
@@ -67,9 +115,6 @@ namespace Philotes.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("Cor")
-                        .HasColumnType("int");
 
                     b.Property<string>("Descricao")
                         .HasColumnType("nvarchar(max)");
@@ -89,7 +134,10 @@ namespace Philotes.Migrations
                     b.Property<int>("Sexo")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UsuarioId")
+                    b.Property<string>("UltimoLocalVisto")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UsuarioId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -97,18 +145,6 @@ namespace Philotes.Migrations
                     b.HasIndex("UsuarioId");
 
                     b.ToTable("Pets");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 5,
-                            Cor = 7,
-                            Descricao = "O Gato mais de boa",
-                            Nome = "Chico",
-                            Porte = 2,
-                            Raca = "SRD",
-                            Sexo = 0
-                        });
                 });
 
             modelBuilder.Entity("Philotes.Models.Usuario", b =>
@@ -118,8 +154,8 @@ namespace Philotes.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("Celular")
-                        .HasColumnType("int");
+                    b.Property<string>("Celular")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("DataAcesso")
                         .HasColumnType("datetime2");
@@ -156,6 +192,25 @@ namespace Philotes.Migrations
                     b.ToTable("Usuarios");
                 });
 
+            modelBuilder.Entity("Philotes.Models.Enums.PetCor", b =>
+                {
+                    b.HasOne("Philotes.Models.Cor", "Cor")
+                        .WithMany()
+                        .HasForeignKey("CorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Philotes.Models.Pet", "Pet")
+                        .WithMany("PetCores")
+                        .HasForeignKey("PetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cor");
+
+                    b.Navigation("Pet");
+                });
+
             modelBuilder.Entity("Philotes.Models.Evento", b =>
                 {
                     b.HasOne("Philotes.Models.Localizacao", "Localizacao")
@@ -173,11 +228,16 @@ namespace Philotes.Migrations
 
             modelBuilder.Entity("Philotes.Models.Pet", b =>
                 {
-                    b.HasOne("Philotes.Models.Usuario", "Usuario")
+                    b.HasOne("Philotes.Models.Usuario", null)
                         .WithMany("Pets")
-                        .HasForeignKey("UsuarioId");
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
 
-                    b.Navigation("Usuario");
+            modelBuilder.Entity("Philotes.Models.Pet", b =>
+                {
+                    b.Navigation("PetCores");
                 });
 
             modelBuilder.Entity("Philotes.Models.Usuario", b =>

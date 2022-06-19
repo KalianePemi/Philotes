@@ -9,6 +9,7 @@ using Philotes.Data;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using System;
+using AspCore_Email.Services;
 
 namespace Philotes.Controllers
 {
@@ -28,8 +29,7 @@ namespace Philotes.Controllers
         public async Task<IActionResult> Get()
         {
             try {
-                return Ok(await _context.Pets.Include(us => us.Usuario)
-                                             .Include(us => us.PetCores)
+                return Ok(await _context.Pets.Include(us => us.PetCores)
                                              .ThenInclude(us => us.Cor).ToListAsync());
             } catch (Exception ex){
                 return BadRequest(ex.Message);
@@ -41,7 +41,7 @@ namespace Philotes.Controllers
         {
            try
            {
-               Pet petObjeto = await _context.Pets.Include(us => us.Usuario)
+               Pet petObjeto = await _context.Pets
                                              .Include(us => us.PetCores).ThenInclude(us => us.Cor)
                
                .FirstOrDefaultAsync(petBusca => petBusca.Id == id);
@@ -121,19 +121,43 @@ namespace Philotes.Controllers
         //     return Ok(pets);
         // }
 
-        [HttpPost("EnviarNotificacao")]
-        public async Task <IActionResult> EnviarEmail()
+        [HttpPost("EnviarNotificacao/{Id}")]
+        public async Task <IActionResult> EnviarNotificacao(int Id)
         {
-            var smtpClient = new SmtpClient("smtp.gmail.com")
-            {
-                Port = 587,
-                Credentials = new NetworkCredential("philotesapp@gmail.com", "philotes123"),
-                EnableSsl = false,
-            };
-    
-            smtpClient.Send("philotesapp@gmail.com", "kaliane.pemi@gmail.com", "Teste", "Olá eu sou um teste de notificação");
+            try {
+                Pet pet = await _context.Pets.FirstOrDefaultAsync (qlqPet => qlqPet.Id == Id);
+                Usuario usuario = await _context.Usuarios.FirstOrDefaultAsync(user => user.Id == pet.UsuarioId);
 
-            return Ok();
+                var emailSettings = new EmailSettings();
+                emailSettings.PrimaryDomain = "smtp.gmail.com";
+                emailSettings.PrimaryPort = 587;
+                emailSettings.CcEmail = "kaliane.pemi@gmail.com";
+                emailSettings.ToEmail = usuario.Email;
+                emailSettings.FromEmail = "appphilotes@gmail.com";
+
+                emailSettings.UsernamePassword = "ufrdspafdzgsyqvm"; 
+                emailSettings.UsernameEmail = "appphilotes@gmail.com";
+
+                emailSettings.Message = $"Olá tenho boas noticias {usuario.Nome}";
+                emailSettings.Subject = $"Encontrei o pet {pet.Nome}";
+
+                var emailService = new AuthMessageSender();
+                await emailService.SendEmailAsync(emailSettings);
+                return Ok();
+
+            } catch (Exception ex) {
+                return BadRequest(ex.Message);
+            }
+
+            // var smtpClient = new SmtpClient("smtp.gmail.com")
+            // {
+            //     Port = 587,
+            //     Credentials = new NetworkCredential("philotesapp@gmail.com", "philotes123"),
+            //     EnableSsl = false,
+            // };
+    
+            // smtpClient.Send("philotesapp@gmail.com", "kaliane.pemi@gmail.com", "Teste", "Olá eu sou um teste de notificação");
+
         }
 
 

@@ -16,8 +16,8 @@ namespace Philotes.Models
         public string Descricao {get; set;}
 
         public byte[] FotoPet {get; set;}
+        public string UltimoLocalVisto {get; set;}
         
-        [JsonIgnore]
-        public Usuario Usuario {get; set;}
+        public int UsuarioId {get; set;}
     }
 }

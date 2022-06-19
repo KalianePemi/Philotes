@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Philotes.Data;
 using Microsoft.EntityFrameworkCore;
+using AspCore_Email.Services;
 
 namespace Philotes
 {
@@ -27,7 +28,8 @@ namespace Philotes
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {
+        {   //services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
+            //services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddDbContext<DataContext>(x => x.UseSqlServer(Configuration.GetConnectionString("ConexaoSomee")));
             services.AddCors();
             services.AddControllers();
