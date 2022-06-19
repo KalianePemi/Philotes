@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
+using System.IO;
+using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Mvc;
 using Philotes.Models;
 using Philotes.Models.Enums;
@@ -72,7 +74,7 @@ namespace Philotes.Controllers
          {
             try
             {
-            List<Pet> listaOrdem = _context.Pets.OrderBy(petObjeto => petObjeto.Porte).ToList();
+            List<Pet> listaOrdem = await _context.Pets.OrderBy(petObjeto => petObjeto.Porte).ToListAsync();
                 return Ok(listaOrdem);
             }
             catch (Exception ex)
@@ -183,6 +185,37 @@ namespace Philotes.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("PhotoUpload"), DisableRequestSizeLimit]
+        public async Task<IActionResult> UploadPetPhoto()
+        {
+            try
+            {
+                var formCollection = await Request.ReadFormAsync();
+                var file = formCollection.Files.First();
+                var folderName = Path.Combine("Resources", "Images");
+                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                if (file.Length > 0)
+                {
+                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                    var fullPath = Path.Combine(pathToSave, fileName);
+                    var petPhoto = Path.Combine(folderName, fileName);
+                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        file.CopyTo(stream);
+                    }
+                    return Ok(new { petPhoto });
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex}");
             }
         }
 
